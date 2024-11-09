@@ -153,6 +153,7 @@ func (p *OrderProduct) Price() int64 {
 	return p.price
 }
 
+// NOTE: 単一のドメインオブジェクトのみでは責務を超える処理の場合にドメインサービスを利用する
 type OrderDomainService interface {
 	OrderProducts(ctx context.Context, cart *cartDomain.Cart, now time.Time) (string, error)
 }

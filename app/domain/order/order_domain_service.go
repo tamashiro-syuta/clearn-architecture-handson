@@ -10,7 +10,7 @@ import (
 )
 
 type orderDomainService struct {
-	orderRepo   OrderRepository
+	orderRepo   OrderRepository // NOTE: 「あれ？ドメイン層がリポジトリ層に依存してない？」と思うかもしれないが、あくまでもこのリポジトリ層のインターフェースはドメイン層で定義されているため、依存関係は問題ない(リポジトリの実装は変更してもドメイン層には影響がない)
 	productRepo productDomain.ProductRepository
 }
 
@@ -24,12 +24,14 @@ func NewOrderDomainService(
 	}
 }
 
+// NOTE: 注文処理は、orderドメインがメインの責務を持つため、ここで実装する(アプリケーションの特有の処理ではなく、orderという概念が持つ処理なので、ユースケースではなくドメインサービスに実装する)
 func (ds *orderDomainService) OrderProducts(ctx context.Context, cart *cartDomain.Cart, now time.Time) (string, error) {
 	// 購入対象の商品を取得
 	ps, err := ds.productRepo.FindByIDs(ctx, cart.ProductIDs())
 	if err != nil {
 		return "", err
 	}
+	// 後続の処理での扱いやすくするために map に変換
 	productMap := make(map[string]*productDomain.Product)
 	for _, p := range ps {
 		productMap[p.ID()] = p

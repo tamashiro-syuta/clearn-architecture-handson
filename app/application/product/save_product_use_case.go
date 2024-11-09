@@ -6,7 +6,7 @@ import (
 )
 
 type SaveProductUseCase struct {
-	productRepo productDomain.ProductRepository
+	productRepo productDomain.ProductRepository // NOTE: usecaseは、repositoryのinterfaceに依存している(抽象に依存しているので問題ない)
 }
 
 func NewSaveProductUseCase(
